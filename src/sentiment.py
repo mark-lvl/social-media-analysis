@@ -1,4 +1,5 @@
 from textblob import TextBlob
+from textblob.sentiments import NaiveBayesAnalyzer
 import numpy as np
 from collections import namedtuple
 import matplotlib.pyplot as plt
@@ -13,13 +14,23 @@ def sentiment_analysis(tweets):
 
     for tweet_id, tweet in tweets.items():
 
-        analysis = TextBlob(tweet['text'])
+        # analysis = TextBlob(tweet['text'], analyzer=NaiveBayesAnalyzer())
+        #
+        # if analysis.sentiment.p_pos >= 0.6:
+        #     positive += 1
+        # elif analysis.sentiment.p_neg >= 0.6:
+        #     negative += 1
+        # else:
+        #     neutral += 1
+        #
+        # output[tweet['text']] = analysis.sentiment.p_pos
 
-        if -0.2 <= analysis.sentiment.polarity <= 0.2:
+        analysis = TextBlob(tweet['text'])
+        if -0.1 <= analysis.sentiment.polarity <= 0.1:
             neutral += 1
-        elif analysis.sentiment.polarity > 0.2:
+        elif analysis.sentiment.polarity > 0.1:
             positive += 1
-        elif analysis.sentiment.polarity < -0.2:
+        elif analysis.sentiment.polarity < -0.1:
             negative += 1
 
         output[tweet['text']] = analysis.polarity
@@ -40,7 +51,10 @@ def sentiment_report(percentages, graph=False, **kwargs):
         labels = ['Negative', 'Neutral', 'Positive']
         sizes = list(percentages)
         colors = ['red', 'gray', 'green']
-        patches, texts = plt.pie(sizes, colors=colors, startangle=90)
+        patches, texts, pct = plt.pie(sizes,
+                                      colors=colors,
+                                      startangle=90,
+                                      autopct='%1.1f%%')
         plt.legend(patches, labels, loc="best")
         plt.title('How people are reacting on ' + kwargs['phrase'] + ' by analyzing ' +
                   str(kwargs['phrase_count']) + ' Tweets.')
