@@ -42,17 +42,27 @@ def limit_handled(cursor):
             time.sleep(15 * 60)
 
 
-def get_tweets(phrase, tweets_count, dump=False):
-    # first check for existing output file
-    output = h.load_output(phrase)
-    if output:
-        return output
+def get_tweets(phrase, tweets_count, cache=False, fetch_new=False):
+    # looking for cache
+    cached_tweets = h.load_output(phrase)
 
-    results = Cursor(get_twitter_client().search, q=phrase, lang="en").items(tweets_count)
+    if cached_tweets and not fetch_new:
+        return cached_tweets
 
-    tweets = {tweet.id:tweet._json for tweet in results}
+    # query phrase to fetch tweets
+    query_results = Cursor(get_twitter_client().search, q=phrase, lang="en").items(tweets_count)
 
-    if dump:
+    # construct tweets dictionary
+    tweets = {tweet.id:tweet._json for tweet in query_results}
+
+    # merge cached and recent tweets if there are any
+    if cached_tweets:
+        tweets = {**tweets, **cached_tweets}
+
+    # casting key to int in order to silent sorting error
+    tweets = {int(k): v for k, v in tweets.items()}
+
+    if cache:
         h.dump_output(tweets, phrase)
 
     return tweets
