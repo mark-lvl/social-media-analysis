@@ -1,6 +1,8 @@
 import sys
 import src.twitter_client as api_client
+import src.sentiment as sentiment
 import time
+import matplotlib.pyplot as plt
 
 # if __name__ == '__main__':
 #     client = get_twitter_client()
@@ -25,9 +27,25 @@ if __name__ == '__main__':
     # output = {}
     # for tweet in tweets:
     #     output[tweet.id] = tweet._json
+    output, percentages = sentiment.sentiment_analysis(tweets)
 
-    for key, value in tweets.items():
-        print(key, '\n', list(value))
+    # print(list(percentages))
+
+    labels = ['Negative', 'Neutral', 'Positive']
+    sizes = list(percentages)
+    colors = ['yellowgreen', 'lightgreen', 'darkgreen']
+    patches, texts = plt.pie(sizes, colors=colors, startangle=90)
+    plt.legend(patches, labels, loc="best")
+    plt.title('How people are reacting on ' + searchTerm + ' by analyzing ' + str(NoOfTerms) + ' Tweets.')
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.show()
+
+    # for tweet, sentiment in output.items():
+    #     print(tweet,':::',sentiment)
+    # print(len(list(tweets)))
+    # for key, value in tweets.items():
+    #     print(key, '\n', list(value))
 
 
     #api_client.friends()

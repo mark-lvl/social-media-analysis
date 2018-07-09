@@ -8,7 +8,6 @@ import tweepy
 import time
 
 
-
 def get_twitter_auth():
     """Setup Twitter authentication.
     Return: tweepy.OAuthHandler object
