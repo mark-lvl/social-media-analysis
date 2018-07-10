@@ -44,7 +44,7 @@ def limit_handled(cursor):
 
 def get_tweets(phrase, tweets_count, cache=False, fetch_new=False):
     # looking for cache
-    cached_tweets = h.load_output(phrase)
+    cached_tweets = h.load_output(phrase, path='output/tweets')
 
     if cached_tweets and not fetch_new:
         return cached_tweets
@@ -63,10 +63,38 @@ def get_tweets(phrase, tweets_count, cache=False, fetch_new=False):
     tweets = {int(k): v for k, v in tweets.items()}
 
     if cache:
-        h.dump_output(tweets, phrase)
+        h.dump_output(tweets, phrase, path='output/tweets')
 
     return tweets
 
 
+def get_user_tweets(user, tweets_count, cache=False, fetch_new=False):
+    # looking for cache
+    cached_tweets = h.load_output(user, path='output/user')
 
+    if cached_tweets and not fetch_new:
+        return cached_tweets
+
+    page_count = 1
+    if tweets_count > 200:
+        page_count = int(tweets_count / 200) + 1
+        tweets_count = 200
+
+    # query phrase to fetch tweets
+    query_results = Cursor(get_twitter_client().user_timeline, screen_name=user, count=tweets_count).pages(page_count)
+
+    # construct tweets dictionary
+    tweets = {tweet.id:tweet._json for page in query_results for tweet in page}
+
+    # merge cached and recent tweets if there are any
+    if cached_tweets:
+        tweets = {**tweets, **cached_tweets}
+
+    # casting key to int in order to silent sorting error
+    tweets = {int(k): v for k, v in tweets.items()}
+
+    if cache:
+        h.dump_output(tweets, user, path='output/user')
+
+    return tweets
 

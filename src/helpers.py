@@ -1,8 +1,9 @@
 import os
 import json
+import re
 
 
-def dump_output(data, filename="", dir=""):
+def dump_output(data, filename="", path=""):
     """
     :param data:
     :param filename:
@@ -13,7 +14,7 @@ def dump_output(data, filename="", dir=""):
         return False
 
     # Check for directory existence
-    filename = os.path.join(os.path.curdir, 'output', 'data', filename)
+    filename = os.path.join(os.path.curdir, *[dir for dir in re.split('/', path)], filename)
     if not os.path.exists(os.path.dirname(filename)):
         try:
             os.makedirs(os.path.dirname(filename))
@@ -27,11 +28,11 @@ def dump_output(data, filename="", dir=""):
                                      indent=4))
 
 
-def load_output(filename, dir=""):
+def load_output(filename, path=""):
     if not filename:
         return False
 
-    filename = os.path.join(os.path.curdir, 'output', 'data', filename)
+    filename = os.path.join(os.path.curdir, *[dir for dir in re.split('/', path)], filename)
 
     if os.path.exists(filename):
         with open(filename, 'r') as file:

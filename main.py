@@ -11,7 +11,7 @@ if __name__ == '__main__':
                                      description='Tweets analysis')
     parser.add_argument(
         'func',
-        choices=['sentiment'],
+        choices=['sentiment','user'],
         help='choose the method to call')
 
     args = parser.parse_args()
@@ -28,3 +28,15 @@ if __name__ == '__main__':
 
         # print percentages in console and draw graph
         sentiment.sentiment_report(percentages, graph=True, phrase=phrase, phrase_count=len(tweets))
+
+    if args.func == 'user':
+        # input for term to be searched and how many tweets to search
+        user = input("Enter user name to search about: ")
+        phrase_count = int(input("Enter how many tweets to search: "))
+        fetch_new = int(input("Fetching new tweets and append to cache?"))
+
+        tweets = api_client.get_user_tweets(user, phrase_count, cache=True, fetch_new=fetch_new)
+
+        print(len(tweets))
+        # for tweet_id, tweet in tweets.items():
+        #     print(tweet_id, ":", tweet['text'])
