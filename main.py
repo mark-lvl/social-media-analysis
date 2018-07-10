@@ -11,7 +11,9 @@ if __name__ == '__main__':
                                      description='Tweets analysis')
     parser.add_argument(
         'func',
-        choices=['sentiment','user'],
+        choices=['sentiment',
+                 'user',
+                 'stream'],
         help='choose the method to call')
 
     args = parser.parse_args()
@@ -40,3 +42,7 @@ if __name__ == '__main__':
         print(len(tweets))
         # for tweet_id, tweet in tweets.items():
         #     print(tweet_id, ":", tweet['text'])
+
+    if args.func == 'stream':
+        phrase = input("Enter Keyword/Tag to live search about: ")
+        api_client.get_stream(phrase)

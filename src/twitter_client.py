@@ -5,7 +5,10 @@ from tweepy import API
 from tweepy import OAuthHandler
 from tweepy import Cursor
 import tweepy
+from tweepy.streaming import StreamListener
+from tweepy import Stream
 import time
+import json
 
 
 def get_twitter_auth():
@@ -97,4 +100,23 @@ def get_user_tweets(user, tweets_count, cache=False, fetch_new=False):
         h.dump_output(tweets, user, path='output/user')
 
     return tweets
+
+
+class TwitterListener(StreamListener):
+
+    def on_data(self, data):
+        j = json.loads(data)
+        print(j["text"])
+        return True
+
+    def on_error(self, status):
+        print(status)
+
+
+def get_stream(phrase):
+    twitter_stream = Stream(get_twitter_auth(), TwitterListener())
+    try:
+        twitter_stream.filter(track=[phrase], async=True)
+    except Exception as e:
+        print(e.__doc__)
 
