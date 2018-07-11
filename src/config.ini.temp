@@ -1,0 +1,5 @@
+[twitter.api]
+ConsumerKey = __API_CONSUMER_KEY_HERE__
+ConsumerSecret = __API_CONSUMER_SECRET_HERE__
+AccessTokenKey = __API_ACCESS_TOKEN_KEY_HERE__
+AccessTokenSecret = __API_ACCESS_TOKEN_SECRET_HERE__

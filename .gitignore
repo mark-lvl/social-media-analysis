@@ -1,4 +1,4 @@
 .idea
 output/*
-config.py
+config.ini
 */__pycache__/*
